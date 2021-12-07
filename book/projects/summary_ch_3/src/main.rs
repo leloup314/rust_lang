@@ -6,7 +6,8 @@ fn main() {
 
     println!("8th Fib. number is {}\n", fibonacci(8));
     
-    print_twelve_days_of_christmas();
+    print_n_days_of_christmas(13);
+    print_n_days_of_christmas(12);
 }
 
 
@@ -32,10 +33,12 @@ fn convert_temps(temp: f32, unit: char) -> f32 {
 
 fn convert_temps_fancy(temp: f32, unit: char) -> f32 {
     
-    // Store result
-    let res = if unit == 'C' {temp * 9. / 5. + 32.} else {(temp - 32.) * 5. / 9.} ;
+    if unit == 'C' {
+        temp * 9. / 5. + 32.
+    } else {
+        (temp - 32.) * 5. / 9.
+    } 
     
-    res
 }
 
 
@@ -48,8 +51,13 @@ fn fibonacci(number: i32) -> i32 {
     }
 }
 
-fn print_twelve_days_of_christmas() {
+fn print_n_days_of_christmas(n:usize) {
+    // Gives up to nth "Twelve das of Christmas" verse
     
+    if n > 12 {
+        println!("Twelve Days Of Christmas has only 12 days, not {}", n);
+        return ()
+    }
     let days = ["First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Elevnth", "Twelth"];
 
     let verses = ["All their good wishes,",
@@ -64,7 +72,7 @@ fn print_twelve_days_of_christmas() {
                   "Three boughs of holly,",
                   "Two candy canes,"];
 
-    for day in 0..12 {
+    for day in 0..n {
         
         // Print first lines
         println!("On the {} day of Christmas", days[day]);
