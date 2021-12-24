@@ -1,16 +1,29 @@
+extern crate input_reader;
+
+
 fn main() {
    
     // Initial state of our lanternfish population
     // The numbers are the age in days
-    let initial: [i32; 5] = [3, 4, 3, 1, 2];
+    //let initial = vec![3, 4, 3, 1, 2];
+    let initial = input_reader::load_lines_from_file("../../input.txt");
+    let initial = initial[0].split(",")
+                            .map(|number| number.parse::<u32>()
+                                                .unwrap())
+                            .collect::<Vec<u32>>();
+    println!("Population count after 80 days is {}", part_one(&initial));
+    println!("Population count after 256 days is {}", part_two(&initial));
+}
 
+
+fn part_one(initial: &Vec<u32>) -> u64 {
     // Determine for how long we want to grow the population
-    let days: i32 = 80;
-
+    let days: i32 = 80;    
+    
     // Counter which holds the entire population
     // The index corresponds to the day until next reproduction
     // The value to the number of lanternfish with this reproduction counter
-    let mut population = [0i32; 9];
+    let mut population = [0u64; 9];
 
     initialize_population(&initial, &mut population);
     
@@ -18,24 +31,39 @@ fn main() {
        advance_population(&mut population);
     }
     
-    let population_count: i32 = population.iter().sum();
-
-    println!("Final population after {} days is {:?}", days, population);
-    println!("Final population count after {} days is  {}", days, population_count);
+    population.iter().sum()
 }
 
 
-fn initialize_population(initial: &[i32], population: &mut [i32]) {
+fn part_two(initial: &Vec<u32>) -> u64 {
+    // Determine for how long we want to grow the population
+    let days: i32 = 256;    
+    
+    // Counter which holds the entire population
+    // The index corresponds to the day until next reproduction
+    // The value to the number of lanternfish with this reproduction counter
+    let mut population = [0u64; 9];
+
+    initialize_population(&initial, &mut population);
+    
+    for _day in 0..days {
+       advance_population(&mut population);
+    }
+    
+    population.iter().sum()
+}
+
+
+fn initialize_population(initial: &Vec<u32>, population: &mut [u64]) {
     // Loop over initial
     for i in 0..initial.len() {
         let n = initial[i] as usize;
         population[n] += 1;
     }
-    println!("Init population to  {:?}", population);
 }
 
 
-fn advance_population(population: &mut [i32]) {
+fn advance_population(population: &mut [u64]) {
     // Advances *population* by one time unit (e.g. day)
 
     // Get population amount with reproduction timer 0
