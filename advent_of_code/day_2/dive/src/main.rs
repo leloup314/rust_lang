@@ -3,7 +3,7 @@ extern crate input_reader;
 
 fn main() {
     let mv_cmds: Vec<String> = input_reader::load_lines_from_file("../../input.txt");
-    //let mv_cmds = vec![String::from("forward 5"), String::from("down 5"), String::from("forward 8"), String::from("up 3"), String::from("down 8"), String::from("forward 2")];     
+    //let mv_cmds = vec!["forward 5".to_string(), "down 5".to_string(), "forward 8".to_string(), "up 3".to_string(), "down 8".to_string(), "forward 2".to_string()];     
     println!("Final product of position is {}", part_one(&mv_cmds));
     println!("Final product of position is {}", part_two(&mv_cmds));
 }
