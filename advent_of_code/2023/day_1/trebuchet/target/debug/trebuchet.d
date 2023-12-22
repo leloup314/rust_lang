@@ -1,0 +1,1 @@
+/home/leloup/git/rust_lang/advent_of_code/2023/day_1/trebuchet/target/debug/trebuchet: /home/leloup/git/rust_lang/advent_of_code/2023/day_1/trebuchet/src/main.rs /home/leloup/git/rust_lang/advent_of_code/utils/input_reader/src/lib.rs
