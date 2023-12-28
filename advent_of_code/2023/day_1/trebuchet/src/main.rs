@@ -1,72 +1,118 @@
-extern crate input_reader;
+fn part1(input_str: &String) -> u32 {
+    // Loop over each line of the input text and filter all numbers into a vector
+    // Construct the respective calibration number from first and last element
+    
+    // Start with 0
+    let mut calibration_sum: u32 = 0;
 
-fn main() {
-    let input_file = "/home/leloup/git/rust_lang/advent_of_code/2023/day_1/input.txt";
-    let input = input_reader::load_lines_from_file(input_file); 
-    let num_part_1 = calibrate_trebuchet_part_1(&input);
-    let num_part_2 = calibrate_trebuchet_part_2(&input);
-    println!("{}", num_part_1);
-    println!("{}", num_part_2);
+    // Loop over each line in the input string
+    for line in input_str.lines() {
+        
+        // Collect all numbers in the
+        let numbers = line.chars()
+                           .filter(|c| c.is_digit(10))
+                           .map(|c| c.to_digit(10).unwrap())
+                           .collect::<Vec<u32>>();
+        // Construct calibration number e.g. [1,7,5] results in "15" 
+        calibration_sum += numbers[0] * 10 + numbers[numbers.len()-1];
+         
+    
+    }
+    calibration_sum
+}
+
+#[derive(Debug)]
+struct Number {
+    name: String,
+    value: u32
 }
 
 
-fn get_first_digit(word: &String, reverse: bool) -> Option<String> {
-    if reverse == true {
-        for tmp in word.chars().rev() {
-            if tmp.is_digit(10) {
-                return Some(String::from(tmp))
-            }
-        }
-    } else {
-        for tmp in word.chars() {
-            if tmp.is_digit(10) {
-                return Some(String::from(tmp))
-            }
-        }
+fn str_starts_with_number(word: &str, numbers: &Vec<Number>) -> Option<u32> {
+    for n in numbers.iter() {
+        if word.starts_with(&n.name) {
+            return Some(n.value)
+        } 
+    }
+    None
+}
+
+fn str_ends_with_number(word: &str, numbers: &Vec<Number>) -> Option<u32> {
+    for n in numbers.iter() {
+        if word.ends_with(&n.name) {
+            return Some(n.value)
+        } 
     }
     None
 }
 
 
-fn get_calibration_value(word: &String, nums: Vec<&str>) -> i32 {
-    // Scans "word" for occurance of number 1-9
-    let mut idxs = Vec<i32>;
+fn part2(input_str: &String) -> u32 {
+    // Basically same as part1 one but now we also look at writte numbers in each line
+    // For each line we do a pre-processing step in which all written numbers are replace with actual digits
+    // Then we apply part1
     
-    for i in 0..nums.len() {
-        println!("{}", word.find(&nums[i]));
-    } 
+    // Create vector of Number structs, containig written name and value
+    let numbers = "one two three four five six seven eight nine".split_whitespace()
+                                                                .enumerate()
+                                                                .map(|(i, n)| Number {name: n.to_string(), value: i as u32 + 1})
+                                                                .collect::<Vec<Number>>();
+    let mut calibration_sum: u32 = 0;
     
+    // Loop over input
+    for line in input_str.lines() {
+        
+        
+        let mut first: u32 = 0;
+        let mut last: u32 = 0;
+
+        // Loop over chars in line
+        for (i, c) in line.chars().enumerate() {
+
+            // Check if first char is digit
+            if c.is_digit(10) {
+                first = c.to_digit(10).unwrap();
+                break;
+            }
+            
+            if let Some(x) = str_starts_with_number(&line[i..], &numbers) {
+                first = x;
+                break;
+            }
+        }
+
+         // Loop over chars in line
+//        let line_reverse = line.chars().rev().collect::<String>();
+        for (i, c) in line.chars().rev().enumerate() {
+            
+            // Check if first char is digit
+            if c.is_digit(10) {
+                last = c.to_digit(10).unwrap();
+                break;
+            }
+            
+            if let Some(x) = str_ends_with_number(&line[..line.len()-(i+1)], &numbers) {
+                last = x;
+                break;
+            }
+        
+        }
+
+        calibration_sum += first * 10 + last;
+
+    }
+   
+    calibration_sum
+
 }
 
 
-fn calibrate_trebuchet_part_2(data: &Vec<String>) -> i32 {
-    // Add vec of numbers that are valid numbers
-    let numbers = vec!["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
 
-    let mut calibration_sum: i32 = 0;
-    // Loop over the input and get calbration values
-    for i in 0..data.len() {
-        // Get the entry
-        let word = &data[i];
-        
-        get_galibration_value(word, numbers);
-    }
-    calibration_sum
-}
-
-
-fn calibrate_trebuchet_part_1(data: &Vec<String>) -> i32 {
-    let mut calibration_sum: i32 = 0;
-    // Loop over the input and get calbration values
-    for i in 0..data.len() {
-        // Get the entry
-        let word = &data[i];
-        
-        let first_digit = get_first_digit(word, false).unwrap();
-        let last_digit = get_first_digit(word, true).unwrap();
-	
-	let calib: i32 = format!("{}{}", first_digit, last_digit).parse().unwrap();
-        calibration_sum += calib;
-    }
-    calibration_sum
+fn main() {
+    let input_file = "/home/leloup/git/rust_lang/advent_of_code/2023/day_1/input.txt";
+    let input = String::from_utf8(std::fs::read(input_file).unwrap()).unwrap();
+    let result_part1 = part1(&input);
+    println!("{}", result_part1);
+    let result_part2 = part2(&input);
+    println!("{}", result_part2);
 }
