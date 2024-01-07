@@ -83,16 +83,16 @@ fn part2(input_str: &String) -> u32 {
 
          // Loop over chars in line
 //        let line_reverse = line.chars().rev().collect::<String>();
-        for (i, c) in line.chars().rev().enumerate() {
-            
+        for (j, k) in line.chars().rev().enumerate() {
+//            println!("{}", &line[..line.len()-j]);
             // Check if first char is digit
-            if c.is_digit(10) {
-                last = c.to_digit(10).unwrap();
+            if k.is_digit(10) {
+                last = k.to_digit(10).unwrap();
                 break;
             }
             
-            if let Some(x) = str_ends_with_number(&line[..line.len()-(i+1)], &numbers) {
-                last = x;
+            if let Some(y) = str_ends_with_number(&line[..line.len()-j], &numbers) {
+                last = y;
                 break;
             }
         
